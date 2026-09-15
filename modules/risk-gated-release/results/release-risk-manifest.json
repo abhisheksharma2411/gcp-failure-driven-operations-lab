@@ -1,0 +1,184 @@
+{
+  "version": 1,
+  "description": "Required release gates derived from change type and blast radius. No change type is exempt; scrutiny follows reach.",
+  "emergency_path": [
+    "AUDIT_IDENTITY",
+    "PROVENANCE"
+  ],
+  "matrix": {
+    "application-code": {
+      "single-instance": [
+        "AUDIT_IDENTITY",
+        "PROVENANCE"
+      ],
+      "single-region": [
+        "AUDIT_IDENTITY",
+        "POLICY_ADMISSION",
+        "PROVENANCE",
+        "REGRESSION_CHECK",
+        "REVERSIBLE",
+        "STAGED_ROLLOUT"
+      ],
+      "global": [
+        "AUDIT_IDENTITY",
+        "BUSINESS_VERIFICATION",
+        "COMPATIBILITY",
+        "POLICY_ADMISSION",
+        "PROVENANCE",
+        "REGRESSION_CHECK",
+        "REVERSIBLE",
+        "STAGED_ROLLOUT"
+      ]
+    },
+    "configuration": {
+      "single-instance": [
+        "AUDIT_IDENTITY",
+        "PROVENANCE"
+      ],
+      "single-region": [
+        "AUDIT_IDENTITY",
+        "POLICY_ADMISSION",
+        "PROVENANCE",
+        "REGRESSION_CHECK",
+        "REVERSIBLE",
+        "STAGED_ROLLOUT"
+      ],
+      "global": [
+        "AUDIT_IDENTITY",
+        "BUSINESS_VERIFICATION",
+        "COMPATIBILITY",
+        "POLICY_ADMISSION",
+        "PROVENANCE",
+        "REGRESSION_CHECK",
+        "REVERSIBLE",
+        "STAGED_ROLLOUT"
+      ]
+    },
+    "infrastructure": {
+      "single-instance": [
+        "AUDIT_IDENTITY",
+        "PROVENANCE"
+      ],
+      "single-region": [
+        "AUDIT_IDENTITY",
+        "POLICY_ADMISSION",
+        "PROVENANCE",
+        "REGRESSION_CHECK",
+        "REVERSIBLE",
+        "STAGED_ROLLOUT"
+      ],
+      "global": [
+        "AUDIT_IDENTITY",
+        "BUSINESS_VERIFICATION",
+        "COMPATIBILITY",
+        "POLICY_ADMISSION",
+        "PROVENANCE",
+        "REGRESSION_CHECK",
+        "REVERSIBLE",
+        "STAGED_ROLLOUT"
+      ]
+    },
+    "schema": {
+      "single-instance": [
+        "AUDIT_IDENTITY",
+        "COMPATIBILITY",
+        "PROVENANCE"
+      ],
+      "single-region": [
+        "AUDIT_IDENTITY",
+        "COMPATIBILITY",
+        "POLICY_ADMISSION",
+        "PROVENANCE",
+        "REGRESSION_CHECK",
+        "REVERSIBLE",
+        "STAGED_ROLLOUT"
+      ],
+      "global": [
+        "AUDIT_IDENTITY",
+        "BUSINESS_VERIFICATION",
+        "COMPATIBILITY",
+        "POLICY_ADMISSION",
+        "PROVENANCE",
+        "REGRESSION_CHECK",
+        "REVERSIBLE",
+        "STAGED_ROLLOUT"
+      ]
+    },
+    "iam": {
+      "single-instance": [
+        "AUDIT_IDENTITY",
+        "COMPATIBILITY",
+        "PROVENANCE"
+      ],
+      "single-region": [
+        "AUDIT_IDENTITY",
+        "COMPATIBILITY",
+        "POLICY_ADMISSION",
+        "PROVENANCE",
+        "REGRESSION_CHECK",
+        "REVERSIBLE",
+        "STAGED_ROLLOUT"
+      ],
+      "global": [
+        "AUDIT_IDENTITY",
+        "BUSINESS_VERIFICATION",
+        "COMPATIBILITY",
+        "POLICY_ADMISSION",
+        "PROVENANCE",
+        "REGRESSION_CHECK",
+        "REVERSIBLE",
+        "STAGED_ROLLOUT"
+      ]
+    },
+    "routing": {
+      "single-instance": [
+        "AUDIT_IDENTITY",
+        "PROVENANCE"
+      ],
+      "single-region": [
+        "AUDIT_IDENTITY",
+        "POLICY_ADMISSION",
+        "PROVENANCE",
+        "REGRESSION_CHECK",
+        "REVERSIBLE",
+        "STAGED_ROLLOUT"
+      ],
+      "global": [
+        "AUDIT_IDENTITY",
+        "BUSINESS_VERIFICATION",
+        "COMPATIBILITY",
+        "POLICY_ADMISSION",
+        "PROVENANCE",
+        "REGRESSION_CHECK",
+        "REVERSIBLE",
+        "STAGED_ROLLOUT"
+      ]
+    },
+    "edge-policy": {
+      "single-instance": [
+        "AUDIT_IDENTITY",
+        "COMPATIBILITY",
+        "PROVENANCE"
+      ],
+      "single-region": [
+        "AUDIT_IDENTITY",
+        "COMPATIBILITY",
+        "POLICY_ADMISSION",
+        "PROVENANCE",
+        "REGRESSION_CHECK",
+        "REVERSIBLE",
+        "STAGED_ROLLOUT"
+      ],
+      "global": [
+        "AUDIT_IDENTITY",
+        "BUSINESS_VERIFICATION",
+        "COMPATIBILITY",
+        "POLICY_ADMISSION",
+        "PROVENANCE",
+        "REGRESSION_CHECK",
+        "REVERSIBLE",
+        "STAGED_ROLLOUT"
+      ]
+    }
+  }
+}

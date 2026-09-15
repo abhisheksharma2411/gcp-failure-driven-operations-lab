@@ -1,0 +1,51 @@
+{
+  "gated, healthy": {
+    "outcome": "COMPLETED",
+    "reachedPhase": "stable",
+    "maxExposure": 100,
+    "reasons": [],
+    "rolledBack": false
+  },
+  "gated, error-rate regression at 25%": {
+    "outcome": "HALTED",
+    "reachedPhase": "canary-25",
+    "maxExposure": 25,
+    "reasons": [
+      "error rate regressed at canary-25: 1 against baseline 0.001"
+    ],
+    "rolledBack": true
+  },
+  "gated, business check fails at 25%": {
+    "outcome": "HALTED",
+    "reachedPhase": "canary-25",
+    "maxExposure": 25,
+    "reasons": [
+      "business verification failed at canary-25"
+    ],
+    "rolledBack": true
+  },
+  "manifest blocks the ungated change": {
+    "outcome": "BLOCKED_AT_GATE",
+    "reachedPhase": null,
+    "maxExposure": 0,
+    "reasons": [
+      "missing gate: BUSINESS_VERIFICATION",
+      "missing gate: COMPATIBILITY",
+      "missing gate: POLICY_ADMISSION",
+      "missing gate: PROVENANCE",
+      "missing gate: REGRESSION_CHECK",
+      "missing gate: REVERSIBLE",
+      "missing gate: STAGED_ROLLOUT"
+    ],
+    "rolledBack": false
+  },
+  "no manifest at all, broken change": {
+    "outcome": "HALTED",
+    "reachedPhase": "stable",
+    "maxExposure": 100,
+    "reasons": [
+      "regression detected, but everything was already exposed"
+    ],
+    "rolledBack": true
+  }
+}
