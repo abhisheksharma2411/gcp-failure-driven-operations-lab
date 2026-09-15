@@ -9,10 +9,11 @@ one specific claim from its companion article.
 | Module | Article | Proves |
 |---|---|---|
 | [`risk-gated-release`](modules/risk-gated-release) | 4 — Safe global releases | Required release gates follow blast radius rather than change type, and staging bounds exposure when a change is wrong |
+| [`recovery-plane`](modules/recovery-plane) | 5 — Out-of-band recovery | A recovery step that depends on the domain it repairs cannot run when it is needed, and independence must be derived from the graph rather than declared |
 
 Planned, created only when the first article that needs them is written:
-recovery plane (Article 5), tested disaster recovery (Article 6), zero-trust
-landing zone (Article 9), and payment observability (Article 22). An empty
+tested disaster recovery (Article 6), zero-trust landing zone (Article 9), and
+payment observability (Article 22). An empty
 repository is not a contribution.
 
 ## Running anything here

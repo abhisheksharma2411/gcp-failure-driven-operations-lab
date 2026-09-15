@@ -1,0 +1,140 @@
+{
+  "naive": {
+    "findings": [
+      {
+        "kind": "CIRCULAR_DEPENDENCY",
+        "stepId": "restore-dns",
+        "domain": "network",
+        "path": [
+          "bastion"
+        ],
+        "message": "step \"restore-dns\" repairs domain \"network\" but depends on \"bastion\", which fails in that same domain"
+      },
+      {
+        "kind": "CIRCULAR_DEPENDENCY",
+        "stepId": "restore-dns",
+        "domain": "network",
+        "path": [
+          "wiki-runbooks"
+        ],
+        "message": "step \"restore-dns\" repairs domain \"network\" but depends on \"wiki-runbooks\", which fails in that same domain"
+      },
+      {
+        "kind": "CIRCULAR_DEPENDENCY",
+        "stepId": "restore-dns",
+        "domain": "network",
+        "path": [
+          "chat"
+        ],
+        "message": "step \"restore-dns\" repairs domain \"network\" but depends on \"chat\", which fails in that same domain"
+      },
+      {
+        "kind": "CIRCULAR_DEPENDENCY",
+        "stepId": "restore-dns",
+        "domain": "network",
+        "path": [
+          "bastion",
+          "corp-network"
+        ],
+        "message": "step \"restore-dns\" repairs domain \"network\" but depends on \"corp-network\", which fails in that same domain"
+      },
+      {
+        "kind": "CIRCULAR_DEPENDENCY",
+        "stepId": "restore-dns",
+        "domain": "network",
+        "path": [
+          "wiki-runbooks",
+          "corp-dns"
+        ],
+        "message": "step \"restore-dns\" repairs domain \"network\" but depends on \"corp-dns\", which fails in that same domain"
+      },
+      {
+        "kind": "CIRCULAR_DEPENDENCY",
+        "stepId": "rotate-compromised-key",
+        "domain": "identity",
+        "path": [
+          "admin-console"
+        ],
+        "message": "step \"rotate-compromised-key\" repairs domain \"identity\" but depends on \"admin-console\", which fails in that same domain"
+      },
+      {
+        "kind": "CIRCULAR_DEPENDENCY",
+        "stepId": "rotate-compromised-key",
+        "domain": "identity",
+        "path": [
+          "secret-manager"
+        ],
+        "message": "step \"rotate-compromised-key\" repairs domain \"identity\" but depends on \"secret-manager\", which fails in that same domain"
+      },
+      {
+        "kind": "CIRCULAR_DEPENDENCY",
+        "stepId": "rotate-compromised-key",
+        "domain": "identity",
+        "path": [
+          "admin-console",
+          "iap"
+        ],
+        "message": "step \"rotate-compromised-key\" repairs domain \"identity\" but depends on \"iap\", which fails in that same domain"
+      },
+      {
+        "kind": "CIRCULAR_DEPENDENCY",
+        "stepId": "rotate-compromised-key",
+        "domain": "identity",
+        "path": [
+          "secret-manager",
+          "identity-provider"
+        ],
+        "message": "step \"rotate-compromised-key\" repairs domain \"identity\" but depends on \"identity-provider\", which fails in that same domain"
+      },
+      {
+        "kind": "CIRCULAR_DEPENDENCY",
+        "stepId": "redeploy-service",
+        "domain": "network",
+        "path": [
+          "ci-pipeline"
+        ],
+        "message": "step \"redeploy-service\" repairs domain \"network\" but depends on \"ci-pipeline\", which fails in that same domain"
+      },
+      {
+        "kind": "CIRCULAR_DEPENDENCY",
+        "stepId": "redeploy-service",
+        "domain": "network",
+        "path": [
+          "chat"
+        ],
+        "message": "step \"redeploy-service\" repairs domain \"network\" but depends on \"chat\", which fails in that same domain"
+      },
+      {
+        "kind": "CIRCULAR_DEPENDENCY",
+        "stepId": "redeploy-service",
+        "domain": "network",
+        "path": [
+          "ci-pipeline",
+          "corp-network"
+        ],
+        "message": "step \"redeploy-service\" repairs domain \"network\" but depends on \"corp-network\", which fails in that same domain"
+      },
+      {
+        "kind": "CIRCULAR_DEPENDENCY",
+        "stepId": "redeploy-service",
+        "domain": "network",
+        "path": [
+          "chat",
+          "corp-dns"
+        ],
+        "message": "step \"redeploy-service\" repairs domain \"network\" but depends on \"corp-dns\", which fails in that same domain"
+      }
+    ],
+    "ok": false,
+    "safeSteps": []
+  },
+  "designed": {
+    "findings": [],
+    "ok": true,
+    "safeSteps": [
+      "restore-dns",
+      "rotate-compromised-key",
+      "redeploy-service"
+    ]
+  }
+}

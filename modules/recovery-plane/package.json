@@ -1,0 +1,16 @@
+{
+  "name": "recovery-plane",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A recovery dependency graph validator and break-glass model. Companion lab for Article 5.",
+  "license": "Apache-2.0",
+  "engines": { "node": ">=22.18.0" },
+  "scripts": {
+    "test": "node --test tests/graph.test.ts tests/breakglass.test.ts tests/negative-control.test.ts",
+    "report": "node scripts/report.ts",
+    "verify": "make verify",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": { "@types/node": "^24.0.0", "typescript": "^5.9.0" }
+}
