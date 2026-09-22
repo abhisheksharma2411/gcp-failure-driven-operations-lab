@@ -1,0 +1,442 @@
+{
+  "generatedFrom": "scripts/report.ts",
+  "evaluatedAt": "2026-01-05T09:00:00.000Z",
+  "note": "Deterministic. No cloud project, no credentials, no network.",
+  "zones": [
+    {
+      "name": "FLAT",
+      "description": "no folders, no constraints, editor for everyone"
+    },
+    {
+      "name": "LOCKED",
+      "description": "every guardrail on, no supported route through"
+    },
+    {
+      "name": "PAVED",
+      "description": "the same guardrails plus a paved road"
+    }
+  ],
+  "suiteResults": {
+    "FLAT": {
+      "name": "landing-zone-controls",
+      "nowMs": 1767603600000,
+      "passed": false,
+      "guardrails": [
+        {
+          "name": "G1 public exposure is refused in production",
+          "passed": false,
+          "expectedLayer": "configuration",
+          "detail": "LEAK: allowed, expected refusal by configuration"
+        },
+        {
+          "name": "G2 a region outside the allowed set is refused",
+          "passed": false,
+          "expectedLayer": "configuration",
+          "detail": "LEAK: allowed, expected refusal by configuration"
+        },
+        {
+          "name": "G3 creating a stored service-account key is refused",
+          "passed": false,
+          "expectedLayer": "configuration",
+          "detail": "LEAK: allowed, expected refusal by configuration"
+        },
+        {
+          "name": "G4 a pipeline presenting a stored key is refused",
+          "passed": false,
+          "expectedLayer": "identity",
+          "detail": "LEAK: allowed, expected refusal by identity"
+        },
+        {
+          "name": "G5 the build identity cannot impersonate the production deployer",
+          "passed": false,
+          "expectedLayer": "identity",
+          "detail": "LEAK: allowed, expected refusal by identity"
+        },
+        {
+          "name": "G6 data cannot be copied out of the sensitive perimeter",
+          "passed": false,
+          "expectedLayer": "perimeter",
+          "detail": "LEAK: allowed, expected refusal by perimeter"
+        }
+      ],
+      "goldenPaths": [
+        {
+          "name": "ship a change to production",
+          "passed": false,
+          "permissionsHeld": 11,
+          "permissions": [
+            "artifactregistry.repositories.uploadArtifacts",
+            "bigquery.tables.export",
+            "compute.instances.create",
+            "iam.serviceAccountKeys.create",
+            "iam.serviceAccounts.create",
+            "iam.serviceAccounts.getAccessToken",
+            "logging.logEntries.list",
+            "run.services.create",
+            "run.services.update",
+            "storage.buckets.create",
+            "storage.buckets.setIamPolicy"
+          ],
+          "manualApprovals": 0,
+          "stepCount": 5,
+          "blockedSteps": [],
+          "viableEscapes": [],
+          "failures": [
+            "OVER-PRIVILEGE: developer holds 11 permissions, budget is 4"
+          ]
+        }
+      ],
+      "guardrailsPassed": 0,
+      "goldenPathsPassed": 0,
+      "summary": "0/6 guardrails held, 0/1 golden paths usable"
+    },
+    "LOCKED": {
+      "name": "landing-zone-controls",
+      "nowMs": 1767603600000,
+      "passed": false,
+      "guardrails": [
+        {
+          "name": "G1 public exposure is refused in production",
+          "passed": true,
+          "expectedLayer": "configuration",
+          "actualLayer": "configuration",
+          "detail": "public exposure is blocked by policy (constraint publicExposure from organizations/example)"
+        },
+        {
+          "name": "G2 a region outside the allowed set is refused",
+          "passed": true,
+          "expectedLayer": "configuration",
+          "actualLayer": "configuration",
+          "detail": "region us-central1 is not in the allowed set [europe-west1, europe-west4] (constraint allowedRegions from organizations/example)"
+        },
+        {
+          "name": "G3 creating a stored service-account key is refused",
+          "passed": true,
+          "expectedLayer": "configuration",
+          "actualLayer": "configuration",
+          "detail": "creating a service-account key is blocked by policy (constraint serviceAccountKeyCreation from organizations/example)"
+        },
+        {
+          "name": "G4 a pipeline presenting a stored key is refused",
+          "passed": true,
+          "expectedLayer": "identity",
+          "actualLayer": "identity",
+          "detail": "credential for sa:ci-build@app-dev is long-lived (kind=serviceAccountKey); this platform requires short-lived identity"
+        },
+        {
+          "name": "G5 the build identity cannot impersonate the production deployer",
+          "passed": true,
+          "expectedLayer": "identity",
+          "actualLayer": "identity",
+          "detail": "sa:ci-build@app-dev lacks iam.serviceAccounts.getAccessToken on sa:deployer@app-prod"
+        },
+        {
+          "name": "G6 data cannot be copied out of the sensitive perimeter",
+          "passed": true,
+          "expectedLayer": "perimeter",
+          "actualLayer": "perimeter",
+          "detail": "egress from projects/sensitive-prod to projects/partner-analytics crosses perimeter sensitive-perimeter"
+        }
+      ],
+      "goldenPaths": [
+        {
+          "name": "ship a change to production",
+          "passed": false,
+          "permissionsHeld": 0,
+          "permissions": [],
+          "manualApprovals": 0,
+          "stepCount": 5,
+          "blockedSteps": [
+            {
+              "name": "borrow the pipeline identity",
+              "layer": "identity",
+              "reason": "user:dana@example.com lacks iam.serviceAccounts.getAccessToken on sa:ci-build@app-dev"
+            },
+            {
+              "name": "push the image",
+              "layer": "identity",
+              "reason": "sa:ci-build@app-dev lacks artifactregistry.repositories.uploadArtifacts on projects/app-dev"
+            },
+            {
+              "name": "deploy to dev",
+              "layer": "identity",
+              "reason": "sa:ci-build@app-dev lacks run.services.update on projects/app-dev"
+            },
+            {
+              "name": "deploy to production",
+              "layer": "identity",
+              "reason": "sa:ci-build@app-dev lacks run.services.update on projects/app-prod"
+            },
+            {
+              "name": "read the logs",
+              "layer": "identity",
+              "reason": "user:dana@example.com lacks logging.logEntries.list on projects/app-prod"
+            }
+          ],
+          "viableEscapes": [
+            "publish the data from the sandbox instead"
+          ],
+          "failures": [
+            "PATH BREAK: 5 of 5 steps refused (borrow the pipeline identity/identity, push the image/identity, deploy to dev/identity, deploy to production/identity, read the logs/identity)",
+            "VIABLE ESCAPE: the supported path is blocked but publish the data from the sandbox instead still works -- the work will go there"
+          ]
+        }
+      ],
+      "guardrailsPassed": 6,
+      "goldenPathsPassed": 0,
+      "summary": "6/6 guardrails held, 0/1 golden paths usable"
+    },
+    "PAVED": {
+      "name": "landing-zone-controls",
+      "nowMs": 1767603600000,
+      "passed": true,
+      "guardrails": [
+        {
+          "name": "G1 public exposure is refused in production",
+          "passed": true,
+          "expectedLayer": "configuration",
+          "actualLayer": "configuration",
+          "detail": "public exposure is blocked by policy (constraint publicExposure from organizations/example)"
+        },
+        {
+          "name": "G2 a region outside the allowed set is refused",
+          "passed": true,
+          "expectedLayer": "configuration",
+          "actualLayer": "configuration",
+          "detail": "region us-central1 is not in the allowed set [europe-west1, europe-west4] (constraint allowedRegions from organizations/example)"
+        },
+        {
+          "name": "G3 creating a stored service-account key is refused",
+          "passed": true,
+          "expectedLayer": "configuration",
+          "actualLayer": "configuration",
+          "detail": "creating a service-account key is blocked by policy (constraint serviceAccountKeyCreation from organizations/example)"
+        },
+        {
+          "name": "G4 a pipeline presenting a stored key is refused",
+          "passed": true,
+          "expectedLayer": "identity",
+          "actualLayer": "identity",
+          "detail": "credential for sa:ci-build@app-dev is long-lived (kind=serviceAccountKey); this platform requires short-lived identity"
+        },
+        {
+          "name": "G5 the build identity cannot impersonate the production deployer",
+          "passed": true,
+          "expectedLayer": "identity",
+          "actualLayer": "identity",
+          "detail": "sa:ci-build@app-dev lacks iam.serviceAccounts.getAccessToken on sa:deployer@app-prod"
+        },
+        {
+          "name": "G6 data cannot be copied out of the sensitive perimeter",
+          "passed": true,
+          "expectedLayer": "perimeter",
+          "actualLayer": "perimeter",
+          "detail": "egress from projects/sensitive-prod to projects/partner-analytics crosses perimeter sensitive-perimeter"
+        }
+      ],
+      "goldenPaths": [
+        {
+          "name": "ship a change to production",
+          "passed": true,
+          "permissionsHeld": 3,
+          "permissions": [
+            "logging.logEntries.list",
+            "run.services.get",
+            "run.services.update"
+          ],
+          "manualApprovals": 0,
+          "stepCount": 5,
+          "blockedSteps": [],
+          "viableEscapes": [],
+          "failures": []
+        }
+      ],
+      "guardrailsPassed": 6,
+      "goldenPathsPassed": 1,
+      "summary": "6/6 guardrails held, 1/1 golden paths usable"
+    }
+  },
+  "exceptionTimeline": [
+    {
+      "dayOffset": 0,
+      "at": "2026-01-05T09:00:00.000Z",
+      "governedBy": "projects/dev-sandbox",
+      "viaException": true,
+      "publicBucketAllowed": true
+    },
+    {
+      "dayOffset": 15,
+      "at": "2026-01-20T09:00:00.000Z",
+      "governedBy": "projects/dev-sandbox",
+      "viaException": true,
+      "publicBucketAllowed": true
+    },
+    {
+      "dayOffset": 29,
+      "at": "2026-02-03T09:00:00.000Z",
+      "governedBy": "projects/dev-sandbox",
+      "viaException": true,
+      "publicBucketAllowed": true
+    },
+    {
+      "dayOffset": 30,
+      "at": "2026-02-04T09:00:00.000Z",
+      "governedBy": "organizations/example",
+      "viaException": false,
+      "publicBucketAllowed": false
+    },
+    {
+      "dayOffset": 31,
+      "at": "2026-02-05T09:00:00.000Z",
+      "governedBy": "organizations/example",
+      "viaException": false,
+      "publicBucketAllowed": false
+    },
+    {
+      "dayOffset": 60,
+      "at": "2026-03-06T09:00:00.000Z",
+      "governedBy": "organizations/example",
+      "viaException": false,
+      "publicBucketAllowed": false
+    }
+  ],
+  "breakGlassTimeline": [
+    {
+      "hourOffset": 0,
+      "at": "2026-01-05T09:00:00.000Z",
+      "elevatedActionAllowed": true,
+      "reason": null
+    },
+    {
+      "hourOffset": 1,
+      "at": "2026-01-05T10:00:00.000Z",
+      "elevatedActionAllowed": true,
+      "reason": null
+    },
+    {
+      "hourOffset": 4,
+      "at": "2026-01-05T13:00:00.000Z",
+      "elevatedActionAllowed": true,
+      "reason": null
+    },
+    {
+      "hourOffset": 7,
+      "at": "2026-01-05T16:00:00.000Z",
+      "elevatedActionAllowed": true,
+      "reason": null
+    },
+    {
+      "hourOffset": 8,
+      "at": "2026-01-05T17:00:00.000Z",
+      "elevatedActionAllowed": false,
+      "reason": "user:sam@example.com lacks run.services.update on projects/app-prod"
+    },
+    {
+      "hourOffset": 9,
+      "at": "2026-01-05T18:00:00.000Z",
+      "elevatedActionAllowed": false,
+      "reason": "user:sam@example.com lacks run.services.update on projects/app-prod"
+    },
+    {
+      "hourOffset": 24,
+      "at": "2026-01-06T09:00:00.000Z",
+      "elevatedActionAllowed": false,
+      "reason": "user:sam@example.com lacks run.services.update on projects/app-prod"
+    }
+  ],
+  "auditFindings": [
+    {
+      "zone": "FLAT",
+      "sensitiveProject": "projects/sensitive-prod",
+      "weaknesses": [
+        {
+          "sink": "local-sink",
+          "kind": "no-retention-lock",
+          "detail": "projects/app-prod accepts deletion of stored records"
+        },
+        {
+          "sink": "local-sink",
+          "kind": "shared-authority",
+          "detail": "4 principal(s) can act destructively on both projects/sensitive-prod and projects/app-prod",
+          "principals": [
+            "sa:ci-build@app-dev",
+            "user:dana@example.com",
+            "user:platform-admin@example.com",
+            "user:sam@example.com"
+          ]
+        }
+      ]
+    },
+    {
+      "zone": "LOCKED",
+      "sensitiveProject": "projects/sensitive-prod",
+      "weaknesses": [
+        {
+          "sink": "org-audit-sink",
+          "kind": "shared-authority",
+          "detail": "2 principal(s) can act destructively on both projects/sensitive-prod and projects/audit-store",
+          "principals": [
+            "user:platform-admin@example.com",
+            "user:sam@example.com"
+          ]
+        }
+      ]
+    },
+    {
+      "zone": "PAVED",
+      "sensitiveProject": "projects/sensitive-prod",
+      "weaknesses": []
+    }
+  ],
+  "perimeterModes": [
+    {
+      "mode": "enforced",
+      "egressAllowed": false,
+      "recordedViolation": null,
+      "guardrailsPassed": 6
+    },
+    {
+      "mode": "dry-run",
+      "egressAllowed": true,
+      "recordedViolation": "egress from projects/sensitive-prod to projects/partner-analytics crosses perimeter sensitive-perimeter",
+      "guardrailsPassed": 5
+    }
+  ],
+  "negativeControls": [
+    {
+      "removed": "publicExposure",
+      "guardrailsPassed": 5,
+      "guardrailsTotal": 6,
+      "detected": true,
+      "firstLeak": "G1 public exposure is refused in production"
+    },
+    {
+      "removed": "allowedRegions",
+      "guardrailsPassed": 5,
+      "guardrailsTotal": 6,
+      "detected": true,
+      "firstLeak": "G2 a region outside the allowed set is refused"
+    },
+    {
+      "removed": "serviceAccountKeyCreation",
+      "guardrailsPassed": 5,
+      "guardrailsTotal": 6,
+      "detected": true,
+      "firstLeak": "G3 creating a stored service-account key is refused"
+    },
+    {
+      "removed": "perimeter",
+      "guardrailsPassed": 5,
+      "guardrailsTotal": 6,
+      "detected": true,
+      "firstLeak": "G6 data cannot be copied out of the sensitive perimeter"
+    },
+    {
+      "removed": "shortLivedCredentials",
+      "guardrailsPassed": 5,
+      "guardrailsTotal": 6,
+      "detected": true,
+      "firstLeak": "G4 a pipeline presenting a stored key is refused"
+    }
+  ]
+}

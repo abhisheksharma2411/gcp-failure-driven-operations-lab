@@ -1,0 +1,17 @@
+{
+  "name": "landing-zone-controls",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A landing-zone policy suite that validates security guardrails and a developer golden path at the same time. Companion lab for Article 9.",
+  "license": "Apache-2.0",
+  "engines": { "node": ">=22.18.0" },
+  "scripts": {
+    "test": "node --test tests/hierarchy.test.ts tests/identity.test.ts tests/policy.test.ts tests/perimeter.test.ts tests/audit.test.ts tests/suite.test.ts tests/policies.test.ts",
+    "report": "node scripts/report.ts",
+    "policies": "node scripts/render-policies.ts",
+    "verify": "make verify",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": { "@types/node": "^24.0.0", "typescript": "^5.9.0" }
+}
