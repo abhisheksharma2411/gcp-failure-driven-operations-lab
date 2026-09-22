@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "description": "Ordered recovery dependencies for the synthetic ledger. Order is part of the contract: data restored before its key or schema fails in ways that look like corruption.",
+  "restoreToolVersion": 2,
+  "readableSchemaVersions": [1, 2],
+  "availableKeys": ["projects/example/locations/global/keyRings/dr/cryptoKeys/ledger"],
+  "steps": [
+    { "id": "project", "description": "Isolated restore project exists and is empty", "requires": [] },
+    { "id": "key", "description": "Encryption key is available and not scheduled for destruction", "requires": ["project"] },
+    { "id": "storage", "description": "Protected artifact is readable from its retained location", "requires": ["project"] },
+    { "id": "schema", "description": "Target schema is created at a version the restore tool can write", "requires": ["project"] },
+    { "id": "data", "description": "Artifact payload is decrypted and loaded", "requires": ["key", "storage", "schema"] },
+    { "id": "reference", "description": "Reference data and configuration are applied", "requires": ["data"] },
+    { "id": "validate", "description": "Application invariants are checked against the restored data", "requires": ["reference"] }
+  ]
+}

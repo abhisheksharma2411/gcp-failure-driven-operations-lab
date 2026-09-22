@@ -1,0 +1,194 @@
+{
+  "healthy restore": {
+    "outcome": "RESTORED_AND_VALIDATED",
+    "artifactId": "bk-good",
+    "reasons": [
+      "restore completed and all invariants passed"
+    ],
+    "stepsCompleted": [
+      "project",
+      "key",
+      "storage",
+      "schema",
+      "data",
+      "reference",
+      "validate"
+    ],
+    "invariants": [
+      {
+        "name": "double-entry balances to zero",
+        "passed": true,
+        "detail": "sum of all postings = 0 minor units"
+      },
+      {
+        "name": "every transaction balances individually",
+        "passed": true,
+        "detail": "all transactions balance"
+      },
+      {
+        "name": "posting ids are unique",
+        "passed": true,
+        "detail": "1000 postings, 1000 distinct ids"
+      },
+      {
+        "name": "no transaction has a single leg",
+        "passed": true,
+        "detail": "every transaction has both legs"
+      },
+      {
+        "name": "dataset is non-empty",
+        "passed": true,
+        "detail": "1000 postings"
+      }
+    ],
+    "rtoMs": 420000,
+    "rpoMs": 14400000,
+    "recordedAtMs": 560000
+  },
+  "backup job succeeded, output unusable": {
+    "outcome": "BLOCKED_UNREADABLE_ARTIFACT",
+    "artifactId": "bk-stale",
+    "reasons": [
+      "artifact bk-stale has no usable payload: it was captured by tool version 1 against schema version 2. The job completed; the output is unusable."
+    ],
+    "stepsCompleted": [
+      "project",
+      "key",
+      "storage",
+      "schema"
+    ],
+    "invariants": [],
+    "rtoMs": 240000,
+    "rpoMs": 14400000,
+    "recordedAtMs": 560000
+  },
+  "encryption key unavailable": {
+    "outcome": "BLOCKED_MISSING_KEY",
+    "artifactId": "bk-good",
+    "reasons": [
+      "key \"projects/example/locations/global/keyRings/dr/cryptoKeys/ledger\" is not available to the restore environment; the payload is ciphertext and stays that way"
+    ],
+    "stepsCompleted": [
+      "project"
+    ],
+    "invariants": [],
+    "rtoMs": 60000,
+    "rpoMs": 14400000,
+    "recordedAtMs": 560000
+  },
+  "manifest omits a dependency": {
+    "outcome": "BLOCKED_MISSING_DEPENDENCY",
+    "artifactId": "bk-good",
+    "reasons": [
+      "step \"app-config\" requires \"secrets-vault\", which the manifest does not declare"
+    ],
+    "stepsCompleted": [],
+    "invariants": [],
+    "rtoMs": 0,
+    "rpoMs": 14400000,
+    "recordedAtMs": 560000
+  },
+  "restore completes, invariants fail": {
+    "outcome": "RESTORED_BUT_INVALID",
+    "artifactId": "bk-corrupt",
+    "reasons": [
+      "invariant failed: double-entry balances to zero (sum of all postings = 100 minor units)",
+      "invariant failed: every transaction balances individually (1 unbalanced: t0=100)",
+      "invariant failed: no transaction has a single leg (1 single-leg transactions)"
+    ],
+    "stepsCompleted": [
+      "project",
+      "key",
+      "storage",
+      "schema",
+      "data",
+      "reference",
+      "validate"
+    ],
+    "invariants": [
+      {
+        "name": "double-entry balances to zero",
+        "passed": false,
+        "detail": "sum of all postings = 100 minor units"
+      },
+      {
+        "name": "every transaction balances individually",
+        "passed": false,
+        "detail": "1 unbalanced: t0=100"
+      },
+      {
+        "name": "posting ids are unique",
+        "passed": true,
+        "detail": "999 postings, 999 distinct ids"
+      },
+      {
+        "name": "no transaction has a single leg",
+        "passed": false,
+        "detail": "1 single-leg transactions"
+      },
+      {
+        "name": "dataset is non-empty",
+        "passed": true,
+        "detail": "999 postings"
+      }
+    ],
+    "rtoMs": 420000,
+    "rpoMs": 14400000,
+    "recordedAtMs": 560000
+  },
+  "after a hostile delete attempt": {
+    "outcome": "RESTORED_AND_VALIDATED",
+    "artifactId": "bk-locked",
+    "reasons": [
+      "restore completed and all invariants passed"
+    ],
+    "stepsCompleted": [
+      "project",
+      "key",
+      "storage",
+      "schema",
+      "data",
+      "reference",
+      "validate"
+    ],
+    "invariants": [
+      {
+        "name": "double-entry balances to zero",
+        "passed": true,
+        "detail": "sum of all postings = 0 minor units"
+      },
+      {
+        "name": "every transaction balances individually",
+        "passed": true,
+        "detail": "all transactions balance"
+      },
+      {
+        "name": "posting ids are unique",
+        "passed": true,
+        "detail": "1000 postings, 1000 distinct ids"
+      },
+      {
+        "name": "no transaction has a single leg",
+        "passed": true,
+        "detail": "every transaction has both legs"
+      },
+      {
+        "name": "dataset is non-empty",
+        "passed": true,
+        "detail": "1000 postings"
+      }
+    ],
+    "rtoMs": 420000,
+    "rpoMs": 14400000,
+    "recordedAtMs": 560000
+  },
+  "protection": {
+    "deleteOutcome": "RETENTION_POLICY_NOT_MET",
+    "shorten": {
+      "applied": false,
+      "retainedUntilMs": 2578100000,
+      "reason": "locked retention policy cannot be reduced"
+    },
+    "finalState": "RETAINED"
+  }
+}

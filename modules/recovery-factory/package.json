@@ -1,0 +1,16 @@
+{
+  "name": "recovery-factory",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Backup provenance, ordered recovery dependencies, and an application validation contract. Companion lab for Article 6.",
+  "license": "Apache-2.0",
+  "engines": { "node": ">=22.18.0" },
+  "scripts": {
+    "test": "node --test tests/protection.test.ts tests/restore.test.ts tests/negative-control.test.ts",
+    "report": "node scripts/report.ts",
+    "verify": "make verify",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": { "@types/node": "^24.0.0", "typescript": "^5.9.0" }
+}
