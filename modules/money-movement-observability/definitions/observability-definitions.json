@@ -1,0 +1,675 @@
+{
+  "note": "Declarative definitions for Article 22. Not Cloud Monitoring API payloads; this module creates no cloud resources.",
+  "metrics": [
+    {
+      "name": "money.http.responses",
+      "kind": "counter",
+      "description": "HTTP responses by class. The signal that stays green in scenario S04.",
+      "unit": "1",
+      "labels": {
+        "service": [
+          "checkout-api",
+          "provider-gateway",
+          "ledger-poster",
+          "settlement-importer"
+        ],
+        "class": [
+          "2xx",
+          "4xx",
+          "5xx"
+        ]
+      }
+    },
+    {
+      "name": "money.http.latency",
+      "kind": "distribution",
+      "description": "Server-side request latency in milliseconds.",
+      "unit": "ms",
+      "labels": {
+        "service": [
+          "checkout-api",
+          "provider-gateway",
+          "ledger-poster",
+          "settlement-importer"
+        ],
+        "route": [
+          "POST /payments",
+          "POST /capture",
+          "POST /postings",
+          "POST /settlements"
+        ]
+      }
+    },
+    {
+      "name": "money.provider.attempts",
+      "kind": "counter",
+      "description": "Calls made to the external provider, by what the provider said.",
+      "unit": "1",
+      "labels": {
+        "outcome": [
+          "captured",
+          "declined",
+          "unknown"
+        ]
+      }
+    },
+    {
+      "name": "money.events.delivered",
+      "kind": "counter",
+      "description": "Event deliveries into the ledger poster, by what the consumer did with them.",
+      "unit": "1",
+      "labels": {
+        "outcome": [
+          "processed",
+          "duplicate-suppressed",
+          "dead-lettered"
+        ]
+      }
+    },
+    {
+      "name": "money.effects.applied",
+      "kind": "counter",
+      "description": "Externally visible money-moving effects actually applied.",
+      "unit": "1",
+      "labels": {
+        "currency": [
+          "EUR",
+          "USD"
+        ]
+      }
+    },
+    {
+      "name": "money.state.oldest_age_seconds",
+      "kind": "gauge",
+      "description": "Age of the oldest operation in each non-terminal state.",
+      "unit": "s",
+      "labels": {
+        "state": [
+          "INTENT",
+          "PROVIDER_PENDING",
+          "OUTCOME_UNKNOWN",
+          "CAPTURED",
+          "POSTED"
+        ]
+      }
+    },
+    {
+      "name": "money.state.count",
+      "kind": "gauge",
+      "description": "Operations in each non-terminal state. Healthy on its own in S03.",
+      "unit": "1",
+      "labels": {
+        "state": [
+          "INTENT",
+          "PROVIDER_PENDING",
+          "OUTCOME_UNKNOWN",
+          "CAPTURED",
+          "POSTED"
+        ]
+      }
+    },
+    {
+      "name": "money.ledger.imbalance_minor",
+      "kind": "gauge",
+      "description": "Absolute difference between debits and credits, in minor units.",
+      "unit": "1",
+      "labels": {
+        "currency": [
+          "EUR",
+          "USD"
+        ]
+      }
+    },
+    {
+      "name": "money.invariant.violations",
+      "kind": "gauge",
+      "description": "Open violations per business invariant. The red light in a green dashboard.",
+      "unit": "1",
+      "labels": {
+        "invariant": [
+          "INV-1",
+          "INV-2",
+          "INV-3",
+          "INV-4",
+          "INV-5",
+          "INV-6",
+          "INV-7",
+          "INV-8"
+        ]
+      }
+    },
+    {
+      "name": "money.reconciliation.open",
+      "kind": "gauge",
+      "description": "Open reconciliation exceptions by kind.",
+      "unit": "1",
+      "labels": {
+        "kind": [
+          "unmatched-effect",
+          "unmatched-settlement",
+          "amount-mismatch"
+        ]
+      }
+    },
+    {
+      "name": "money.reconciliation.oldest_age_seconds",
+      "kind": "gauge",
+      "description": "Age of the oldest open exception by kind. Moves when the count does not.",
+      "unit": "s",
+      "labels": {
+        "kind": [
+          "unmatched-effect",
+          "unmatched-settlement",
+          "amount-mismatch"
+        ]
+      }
+    },
+    {
+      "name": "money.settlement.lateness_seconds",
+      "kind": "gauge",
+      "description": "How long the oldest captured effect has waited for settlement evidence.",
+      "unit": "s",
+      "labels": {
+        "currency": [
+          "EUR",
+          "USD"
+        ]
+      }
+    },
+    {
+      "name": "money.canary.outcome",
+      "kind": "counter",
+      "description": "Synthetic canary runs, by result.",
+      "unit": "1",
+      "labels": {
+        "result": [
+          "pass",
+          "fail"
+        ]
+      }
+    },
+    {
+      "name": "money.checker.staleness_seconds",
+      "kind": "gauge",
+      "description": "Time since each periodic checker last completed. Absence of signal is not health.",
+      "unit": "s",
+      "labels": {
+        "checker": [
+          "invariants",
+          "canary",
+          "reconciliation"
+        ]
+      }
+    }
+  ],
+  "invariants": [
+    {
+      "id": "INV-1",
+      "title": "the journal balances",
+      "statement": "For every live posting group, the sum of debits equals the sum of credits.",
+      "severity": "page",
+      "runbook": "RB-LEDGER-IMBALANCE",
+      "invisibleTo": "request success rate, latency, error rate — the posting request returns 200"
+    },
+    {
+      "id": "INV-2",
+      "title": "the posting equals the effect",
+      "statement": "For every provider effect with a posting group, the amount credited to the customer equals the amount the provider captured.",
+      "severity": "page",
+      "runbook": "RB-POSTING-MISMATCH",
+      "invisibleTo": "provider success rate — the capture succeeded and the posting succeeded"
+    },
+    {
+      "id": "INV-3",
+      "title": "no posting without an effect",
+      "statement": "Every posting group references a provider effect that exists.",
+      "severity": "page",
+      "runbook": "RB-ORPHAN-POSTING",
+      "invisibleTo": "event delivery metrics — the event was delivered and acknowledged"
+    },
+    {
+      "id": "INV-4",
+      "title": "one effect per operation",
+      "statement": "A logical operation causes at most one externally visible money-moving effect.",
+      "severity": "page",
+      "runbook": "RB-DUPLICATE-EFFECT",
+      "invisibleTo": "arrival counts — every arrival was handled successfully"
+    },
+    {
+      "id": "INV-5",
+      "title": "the customer is told the truth",
+      "statement": "No operation reports SUCCEEDED to the customer without a captured provider effect, and none reports FAILED when one exists.",
+      "severity": "page",
+      "runbook": "RB-STATUS-DIVERGENCE",
+      "invisibleTo": "the status endpoint's own availability and latency"
+    },
+    {
+      "id": "INV-6",
+      "title": "nothing is stuck",
+      "statement": "No operation remains in a non-terminal state for longer than its state-age budget.",
+      "severity": "page",
+      "runbook": "RB-STUCK-OPERATION",
+      "invisibleTo": "queue depth and in-flight counts, which stay small while an age grows"
+    },
+    {
+      "id": "INV-7",
+      "title": "settlement arrives",
+      "statement": "Every captured effect older than the settlement budget appears in settlement evidence.",
+      "severity": "ticket",
+      "runbook": "RB-SETTLEMENT-LATE",
+      "invisibleTo": "every online signal; nothing in the request path knows settlement is late"
+    },
+    {
+      "id": "INV-8",
+      "title": "the exception queue drains",
+      "statement": "Open reconciliation exceptions stay within budget in both count and age.",
+      "severity": "ticket",
+      "runbook": "RB-RECONCILIATION-BACKLOG",
+      "invisibleTo": "throughput, which rises while the residue accumulates"
+    }
+  ],
+  "slos": [
+    {
+      "id": "SLO-C1",
+      "tier": "customer-promise",
+      "title": "checkout accepts a payment",
+      "specification": "The proportion of checkout requests that receive a non-5xx response.",
+      "implementation": "money.http.responses{service=checkout-api}, 2xx+4xx over all classes.",
+      "kind": "request-based",
+      "goal": 0.999,
+      "detectMinutes": null,
+      "repairMinutes": null,
+      "window": "28-day rolling",
+      "note": "This is the number a dashboard shows first and the one that stays green in S04."
+    },
+    {
+      "id": "SLO-C2",
+      "tier": "customer-promise",
+      "title": "checkout responds quickly",
+      "specification": "The proportion of checkout requests served faster than 400 ms.",
+      "implementation": "money.http.latency{service=checkout-api}, p95 against a 400 ms threshold.",
+      "kind": "request-based",
+      "goal": 0.99,
+      "detectMinutes": null,
+      "repairMinutes": null,
+      "window": "28-day rolling",
+      "note": "Fast is not the same as correct, and this objective knows nothing about the ledger."
+    },
+    {
+      "id": "SLO-C3",
+      "tier": "customer-promise",
+      "title": "the status a customer sees is true",
+      "specification": "INV-5 holds: nobody is told SUCCEEDED without a provider effect, or FAILED when one exists.",
+      "implementation": "money.invariant.violations{invariant=INV-5}, evaluated out of band against durable state.",
+      "kind": "detect-and-repair",
+      "goal": null,
+      "detectMinutes": 15,
+      "repairMinutes": 60,
+      "window": "per occurrence",
+      "note": "The status endpoint can be fast, available and lying. Its own SLIs cannot tell."
+    },
+    {
+      "id": "SLO-S1",
+      "tier": "service-processing",
+      "title": "an accepted payment reaches a terminal state",
+      "specification": "The proportion of operations that leave every non-terminal state within the state-age budget (INV-6).",
+      "implementation": "money.state.oldest_age_seconds per state, against the budget.",
+      "kind": "windows-based",
+      "goal": 0.999,
+      "detectMinutes": null,
+      "repairMinutes": null,
+      "window": "28-day rolling",
+      "note": "Age, not count. A small count with a growing age is the stuck case."
+    },
+    {
+      "id": "SLO-P1",
+      "tier": "provider-outcome",
+      "title": "unknown outcomes are resolved",
+      "specification": "The proportion of provider calls whose outcome is known within 10 minutes, with INV-4 holding throughout.",
+      "implementation": "money.state.oldest_age_seconds{state=OUTCOME_UNKNOWN} against the budget; money.invariant.violations{invariant=INV-4}.",
+      "kind": "windows-based",
+      "goal": 0.999,
+      "detectMinutes": null,
+      "repairMinutes": null,
+      "window": "28-day rolling",
+      "note": "An unknown outcome is a state to resolve, not an error to retry blindly."
+    },
+    {
+      "id": "SLO-L1",
+      "tier": "ledger-posting",
+      "title": "the journal balances",
+      "specification": "INV-1 holds. There is no acceptable rate of unbalanced journals.",
+      "implementation": "money.invariant.violations{invariant=INV-1}, evaluated out of band.",
+      "kind": "detect-and-repair",
+      "goal": null,
+      "detectMinutes": 15,
+      "repairMinutes": 240,
+      "window": "per occurrence",
+      "note": "Expressed as time to detect and time to repair rather than as a ratio. See ADR-001."
+    },
+    {
+      "id": "SLO-L2",
+      "tier": "ledger-posting",
+      "title": "postings match effects",
+      "specification": "INV-2 and INV-3 hold for every live posting group.",
+      "implementation": "money.invariant.violations{invariant=INV-2} and {invariant=INV-3}.",
+      "kind": "detect-and-repair",
+      "goal": null,
+      "detectMinutes": 15,
+      "repairMinutes": 240,
+      "window": "per occurrence",
+      "note": "A posting that succeeded and a posting that is right are different claims."
+    },
+    {
+      "id": "SLO-F1",
+      "tier": "settlement-finality",
+      "title": "settlement evidence arrives",
+      "specification": "INV-7 holds: every capture older than 48 hours has settlement evidence.",
+      "implementation": "money.settlement.lateness_seconds and money.invariant.violations{invariant=INV-7}.",
+      "kind": "detect-and-repair",
+      "goal": null,
+      "detectMinutes": 60,
+      "repairMinutes": 2880,
+      "window": "per occurrence",
+      "note": "Nothing in the request path knows this is late. Only a periodic check does."
+    },
+    {
+      "id": "SLO-F2",
+      "tier": "settlement-finality",
+      "title": "the exception queue drains",
+      "specification": "INV-8 holds in both count and age.",
+      "implementation": "money.reconciliation.open and money.reconciliation.oldest_age_seconds.",
+      "kind": "detect-and-repair",
+      "goal": null,
+      "detectMinutes": 60,
+      "repairMinutes": 2880,
+      "window": "per occurrence",
+      "note": "Throughput rises while the residue accumulates, so throughput is the wrong signal."
+    }
+  ],
+  "alerts": [
+    {
+      "id": "ALERT-API-AVAILABILITY",
+      "title": "checkout availability below objective",
+      "basis": "technical",
+      "severity": "page",
+      "route": "payments-oncall",
+      "condition": "SLO-C1 is below 99.9% over the alerting window",
+      "runbook": "RB-API-AVAILABILITY",
+      "asks": "Are customers being refused?"
+    },
+    {
+      "id": "ALERT-API-LATENCY",
+      "title": "checkout latency above objective",
+      "basis": "technical",
+      "severity": "ticket",
+      "route": "payments-oncall",
+      "condition": "p95 of money.http.latency{service=checkout-api} exceeds 400 ms",
+      "runbook": "RB-API-LATENCY",
+      "asks": "Are customers waiting?"
+    },
+    {
+      "id": "ALERT-PROVIDER-UNKNOWN",
+      "title": "provider outcome unknown beyond budget",
+      "basis": "technical",
+      "severity": "page",
+      "route": "payments-oncall",
+      "condition": "money.state.oldest_age_seconds{state=OUTCOME_UNKNOWN} exceeds the unknown-outcome budget",
+      "runbook": "RB-UNKNOWN-OUTCOME",
+      "asks": "Did money move for an operation we have given up on?"
+    },
+    {
+      "id": "ALERT-LEDGER-IMBALANCE",
+      "title": "journal does not balance",
+      "basis": "invariant",
+      "severity": "page",
+      "route": "payments-oncall",
+      "condition": "money.invariant.violations{invariant=INV-1} is above zero",
+      "runbook": "RB-LEDGER-IMBALANCE",
+      "asks": "Which journal, which operation, how much, and since when?"
+    },
+    {
+      "id": "ALERT-POSTING-MISMATCH",
+      "title": "posting does not match the provider effect",
+      "basis": "invariant",
+      "severity": "page",
+      "route": "payments-oncall",
+      "condition": "money.invariant.violations{invariant=INV-2} is above zero",
+      "runbook": "RB-POSTING-MISMATCH",
+      "asks": "Does what we recorded match what the provider did?"
+    },
+    {
+      "id": "ALERT-ORPHAN-POSTING",
+      "title": "posting references an effect nobody recorded",
+      "basis": "invariant",
+      "severity": "page",
+      "route": "payments-oncall",
+      "condition": "money.invariant.violations{invariant=INV-3} is above zero",
+      "runbook": "RB-ORPHAN-POSTING",
+      "asks": "Did we book money that no provider effect accounts for?"
+    },
+    {
+      "id": "ALERT-DUPLICATE-EFFECT",
+      "title": "one operation produced more than one effect",
+      "basis": "invariant",
+      "severity": "page",
+      "route": "payments-oncall",
+      "condition": "money.invariant.violations{invariant=INV-4} is above zero",
+      "runbook": "RB-DUPLICATE-EFFECT",
+      "asks": "Has a customer been charged twice?"
+    },
+    {
+      "id": "ALERT-STATUS-DIVERGENCE",
+      "title": "customer status contradicts durable state",
+      "basis": "invariant",
+      "severity": "page",
+      "route": "payments-oncall",
+      "condition": "money.invariant.violations{invariant=INV-5} is above zero",
+      "runbook": "RB-STATUS-DIVERGENCE",
+      "asks": "Have we told somebody something untrue?"
+    },
+    {
+      "id": "ALERT-STUCK-OPERATION",
+      "title": "operation stuck in a non-terminal state",
+      "basis": "invariant",
+      "severity": "page",
+      "route": "payments-oncall",
+      "condition": "money.invariant.violations{invariant=INV-6} is above zero",
+      "runbook": "RB-STUCK-OPERATION",
+      "asks": "Which operation stopped moving, and at which step?"
+    },
+    {
+      "id": "ALERT-SETTLEMENT-LATE",
+      "title": "capture without settlement evidence",
+      "basis": "invariant",
+      "severity": "ticket",
+      "route": "payments-finops",
+      "condition": "money.invariant.violations{invariant=INV-7} is above zero",
+      "runbook": "RB-SETTLEMENT-LATE",
+      "asks": "Is the bank short of money we believe we have?"
+    },
+    {
+      "id": "ALERT-RECON-BACKLOG",
+      "title": "reconciliation exceptions outside budget",
+      "basis": "invariant",
+      "severity": "ticket",
+      "route": "payments-finops",
+      "condition": "money.invariant.violations{invariant=INV-8} is above zero",
+      "runbook": "RB-RECONCILIATION-BACKLOG",
+      "asks": "Is the exception queue draining or accumulating?"
+    },
+    {
+      "id": "ALERT-CHECKER-STALE",
+      "title": "an invariant checker has stopped reporting",
+      "basis": "meta",
+      "severity": "page",
+      "route": "observability-oncall",
+      "condition": "money.checker.staleness_seconds exceeds the staleness budget for any checker",
+      "runbook": "RB-CHECKER-STALE",
+      "asks": "Is the dashboard green because the system is healthy or because nothing is looking?"
+    },
+    {
+      "id": "ALERT-CANARY-FAILED",
+      "title": "synthetic money-movement canary failed",
+      "basis": "meta",
+      "severity": "page",
+      "route": "payments-oncall",
+      "condition": "money.canary.outcome{result=fail} increased in the last window",
+      "runbook": "RB-CANARY-FAILED",
+      "asks": "Does a known-good payment still produce the known-good effect?"
+    },
+    {
+      "id": "ALERT-CARDINALITY-REJECTED",
+      "title": "metric writes refused by the cardinality guard",
+      "basis": "meta",
+      "severity": "ticket",
+      "route": "observability-oncall",
+      "condition": "the registry refused one or more label writes in the last window",
+      "runbook": "RB-CARDINALITY",
+      "asks": "Which service tried to put an identifier on a metric label?"
+    }
+  ],
+  "dashboards": [
+    {
+      "name": "money-movement-technical",
+      "purpose": "Whether the services are responding.",
+      "answers": "Is the software up, fast, and returning successes?",
+      "tiles": [
+        {
+          "title": "Response classes by service",
+          "metric": "money.http.responses",
+          "groupBy": [
+            "service",
+            "class"
+          ],
+          "kind": "line",
+          "reads": "A rising 5xx line is a service problem. A flat zero proves nothing about money."
+        },
+        {
+          "title": "Request latency p95",
+          "metric": "money.http.latency",
+          "groupBy": [
+            "service"
+          ],
+          "kind": "heatmap",
+          "reads": "Tail latency by service. Distribution, not mean: a mean hides the tail."
+        },
+        {
+          "title": "Provider attempts by outcome",
+          "metric": "money.provider.attempts",
+          "groupBy": [
+            "outcome"
+          ],
+          "kind": "line",
+          "reads": "The 'unknown' series is the one to watch; it is not an error, it is an open question."
+        },
+        {
+          "title": "Event deliveries",
+          "metric": "money.events.delivered",
+          "groupBy": [
+            "outcome"
+          ],
+          "kind": "line",
+          "reads": "Duplicates suppressed is a health signal, not a defect count."
+        }
+      ]
+    },
+    {
+      "name": "money-movement-invariants",
+      "purpose": "Whether the money is where the books say it is.",
+      "answers": "Is anything financially wrong right now, and for how long has it been wrong?",
+      "tiles": [
+        {
+          "title": "Open invariant violations",
+          "metric": "money.invariant.violations",
+          "groupBy": [
+            "invariant"
+          ],
+          "kind": "stat",
+          "reads": "Any non-zero value is an incident. There is no acceptable rate."
+        },
+        {
+          "title": "Effects applied",
+          "metric": "money.effects.applied",
+          "groupBy": [
+            "currency"
+          ],
+          "kind": "line",
+          "reads": "Money-moving effects, not arrivals. Compare with request counts, never substitute them."
+        },
+        {
+          "title": "Ledger imbalance",
+          "metric": "money.ledger.imbalance_minor",
+          "groupBy": [
+            "currency"
+          ],
+          "kind": "line",
+          "reads": "Minor units of difference between debits and credits. The headline of S04."
+        },
+        {
+          "title": "Oldest operation by state",
+          "metric": "money.state.oldest_age_seconds",
+          "groupBy": [
+            "state"
+          ],
+          "kind": "line",
+          "reads": "Age, beside count. A small count with a growing age is the stuck case."
+        },
+        {
+          "title": "Operations by state",
+          "metric": "money.state.count",
+          "groupBy": [
+            "state"
+          ],
+          "kind": "line",
+          "reads": "Present only so that it can be compared with the tile above it."
+        },
+        {
+          "title": "Settlement lateness",
+          "metric": "money.settlement.lateness_seconds",
+          "groupBy": [
+            "currency"
+          ],
+          "kind": "line",
+          "reads": "How long the oldest capture has waited for bank evidence."
+        },
+        {
+          "title": "Reconciliation exceptions open",
+          "metric": "money.reconciliation.open",
+          "groupBy": [
+            "kind"
+          ],
+          "kind": "line",
+          "reads": "The count. Read it beside the age tile below, never instead of it."
+        },
+        {
+          "title": "Reconciliation exceptions: oldest open",
+          "metric": "money.reconciliation.oldest_age_seconds",
+          "groupBy": [
+            "kind"
+          ],
+          "kind": "line",
+          "reads": "The age series moves first when the queue stops draining."
+        },
+        {
+          "title": "Checker staleness",
+          "metric": "money.checker.staleness_seconds",
+          "groupBy": [
+            "checker"
+          ],
+          "kind": "stat",
+          "reads": "If this grows, every tile above it is unreliable and must be read as unknown."
+        },
+        {
+          "title": "Canary outcome",
+          "metric": "money.canary.outcome",
+          "groupBy": [
+            "result"
+          ],
+          "kind": "line",
+          "reads": "A known-good payment, end to end, on a schedule. A failure here precedes customer reports."
+        }
+      ]
+    }
+  ]
+}

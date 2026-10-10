@@ -1,0 +1,18 @@
+{
+  "name": "money-movement-observability",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Technical SLOs beside business invariants for a synthetic money-movement flow, with a fault catalogue that proves each alert can fire. Companion lab for Article 22.",
+  "license": "Apache-2.0",
+  "engines": { "node": ">=22.18.0" },
+  "scripts": {
+    "test": "node --test tests/telemetry.test.ts tests/invariants.test.ts tests/flow.test.ts tests/scenarios.test.ts tests/incident.test.ts",
+    "report": "node scripts/report.ts",
+    "definitions": "node scripts/export-definitions.ts",
+    "incident": "node scripts/incident.ts",
+    "verify": "make verify",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "devDependencies": { "@types/node": "^24.0.0", "typescript": "^5.9.0" }
+}

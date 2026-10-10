@@ -1,0 +1,1208 @@
+{
+  "generatedFrom": "scripts/report.ts",
+  "evaluatedAt": "2026-01-05T00:00:00.000Z",
+  "note": "Deterministic. No cloud project, no credentials, no network. Every figure is a Simulated result.",
+  "scenarios": [
+    {
+      "id": "S01",
+      "title": "the provider succeeded and the client never heard",
+      "covers": "provider success with lost client response",
+      "technicalGreen": false,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 0,
+          "goal": 0.999,
+          "met": false
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [
+        "INV-6"
+      ],
+      "alertsFired": [
+        "ALERT-PROVIDER-UNKNOWN",
+        "ALERT-STUCK-OPERATION"
+      ],
+      "extra": {
+        "effectsRecorded": 1
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S02",
+      "title": "the same event is delivered twice and nothing happens twice",
+      "covers": "duplicate delivery without duplicate effect",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [],
+      "alertsFired": [],
+      "extra": {
+        "effects": 1,
+        "duplicatesSuppressed": 1
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S03",
+      "title": "one operation stops moving while the queue looks empty",
+      "covers": "stuck in-progress operation",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [
+        "INV-6"
+      ],
+      "alertsFired": [
+        "ALERT-STUCK-OPERATION"
+      ],
+      "extra": {
+        "capturedCount": 1
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S04",
+      "title": "every call returns 200 and the journal is short by the fee",
+      "covers": "ledger imbalance injected in a non-production fixture",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [
+        "INV-1"
+      ],
+      "alertsFired": [
+        "ALERT-LEDGER-IMBALANCE"
+      ],
+      "extra": {
+        "httpErrors": 0,
+        "legs": 2
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S05",
+      "title": "the exception queue stops draining",
+      "covers": "reconciliation backlog growth",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [
+        "INV-8"
+      ],
+      "alertsFired": [
+        "ALERT-RECON-BACKLOG"
+      ],
+      "extra": {
+        "openExceptions": 31
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S06",
+      "title": "the telemetry pipeline goes away and the dashboard turns green",
+      "covers": "telemetry pipeline partially unavailable",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 0,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [],
+      "alertsFired": [
+        "ALERT-CHECKER-STALE"
+      ],
+      "extra": {
+        "seriesWritten": 0
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S07",
+      "title": "the sampler drops the trace and the audit record survives",
+      "covers": "trace sampling still preserves required audit evidence",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [],
+      "alertsFired": [],
+      "extra": {
+        "exportedSpans": 0,
+        "auditRecords": 5,
+        "timelineReconstructed": true
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S08",
+      "title": "a card number and an address reach a log line and do not leave it",
+      "covers": "log-redaction test",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [],
+      "alertsFired": [],
+      "extra": {
+        "panOccurrences": 0,
+        "emailOccurrences": 0,
+        "correlationIntact": true
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S09",
+      "title": "a service tries to label a metric with an operation id",
+      "covers": "metric-cardinality guard",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [],
+      "alertsFired": [
+        "ALERT-CARDINALITY-REJECTED"
+      ],
+      "extra": {
+        "rejected": 1
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S10",
+      "title": "the alert fires, the runbook repairs it twice, and the invariant comes back",
+      "covers": "alert fires, runbook identifies cause, repair executes idempotently, invariant healthy",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [],
+      "alertsFired": [],
+      "extra": {
+        "violationsBefore": 1,
+        "violationsAfter": 0,
+        "repairIdempotent": true,
+        "timelineSteps": 5,
+        "outcome": "resolved"
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S11",
+      "title": "checkout refuses the request and every signal agrees",
+      "covers": "alert coverage: availability breach",
+      "technicalGreen": false,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 0,
+          "goal": 0.999,
+          "met": false
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 38,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [],
+      "alertsFired": [
+        "ALERT-API-AVAILABILITY"
+      ],
+      "extra": {
+        "effects": 0
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S12",
+      "title": "checkout answers slowly and correctly",
+      "covers": "alert coverage: latency breach",
+      "technicalGreen": false,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1400,
+          "goal": 400,
+          "met": false
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [],
+      "alertsFired": [
+        "ALERT-API-LATENCY"
+      ],
+      "extra": {
+        "p95": 1400
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S13",
+      "title": "the journal balances and credits the wrong amount",
+      "covers": "alert coverage: posting mismatch with a balanced journal",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [
+        "INV-2"
+      ],
+      "alertsFired": [
+        "ALERT-POSTING-MISMATCH"
+      ],
+      "extra": {
+        "balanced": true
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S14",
+      "title": "a posting arrives for an effect nobody recorded",
+      "covers": "alert coverage: orphan posting",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [
+        "INV-3"
+      ],
+      "alertsFired": [
+        "ALERT-ORPHAN-POSTING"
+      ],
+      "extra": {
+        "postings": 1
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S15",
+      "title": "a retry mints a fresh key and the customer is charged twice",
+      "covers": "alert coverage: duplicate effect",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [
+        "INV-4"
+      ],
+      "alertsFired": [
+        "ALERT-DUPLICATE-EFFECT"
+      ],
+      "extra": {
+        "effects": 2
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S16",
+      "title": "the provider declined and the customer was told it worked",
+      "covers": "alert coverage: status divergence",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [
+        "INV-5"
+      ],
+      "alertsFired": [
+        "ALERT-STATUS-DIVERGENCE"
+      ],
+      "extra": {
+        "effects": 0
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S17",
+      "title": "settlement evidence never arrives",
+      "covers": "alert coverage: settlement lateness",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [
+        "INV-7"
+      ],
+      "alertsFired": [
+        "ALERT-SETTLEMENT-LATE"
+      ],
+      "extra": {
+        "settlements": 0
+      },
+      "passed": true,
+      "failures": []
+    },
+    {
+      "id": "S18",
+      "title": "the canary notices before a customer does",
+      "covers": "alert coverage: synthetic canary failure",
+      "technicalGreen": true,
+      "technical": [
+        {
+          "id": "SLO-C1",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-C2",
+          "tier": "customer-promise",
+          "kind": "request-based",
+          "value": 42,
+          "goal": 400,
+          "met": true
+        },
+        {
+          "id": "SLO-P1",
+          "tier": "provider-outcome",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        },
+        {
+          "id": "SLO-S1",
+          "tier": "service-processing",
+          "kind": "windows-based",
+          "value": 1,
+          "goal": 0.999,
+          "met": true
+        }
+      ],
+      "invariantsViolated": [],
+      "alertsFired": [
+        "ALERT-CANARY-FAILED"
+      ],
+      "extra": {
+        "canaryChecksFailed": 3
+      },
+      "passed": true,
+      "failures": []
+    }
+  ],
+  "greenAndWrong": [
+    "S03",
+    "S04",
+    "S05",
+    "S13",
+    "S14",
+    "S15",
+    "S16",
+    "S17"
+  ],
+  "negativeControls": [
+    {
+      "removed": "no-invariant-checker",
+      "scenariosTurnedRed": [
+        "S01",
+        "S03",
+        "S04",
+        "S05",
+        "S13",
+        "S14",
+        "S15",
+        "S16",
+        "S17"
+      ],
+      "detected": true,
+      "targeted": true
+    },
+    {
+      "removed": "no-state-age-check",
+      "scenariosTurnedRed": [
+        "S01",
+        "S03",
+        "S17"
+      ],
+      "detected": true,
+      "targeted": true
+    },
+    {
+      "removed": "no-redaction",
+      "scenariosTurnedRed": [
+        "S08"
+      ],
+      "detected": true,
+      "targeted": true
+    },
+    {
+      "removed": "no-cardinality-guard",
+      "scenariosTurnedRed": [
+        "S09"
+      ],
+      "detected": true,
+      "targeted": true
+    },
+    {
+      "removed": "no-audit-trail",
+      "scenariosTurnedRed": [
+        "S07"
+      ],
+      "detected": true,
+      "targeted": true
+    }
+  ],
+  "bluntControl": {
+    "removed": "disable-everything",
+    "scenariosTurnedRed": [
+      "S01",
+      "S03",
+      "S04",
+      "S05",
+      "S07",
+      "S08",
+      "S09",
+      "S13",
+      "S14",
+      "S15",
+      "S16",
+      "S17"
+    ],
+    "rejected": true,
+    "reason": "a mutation that reddens most of the catalogue cannot show which scenario covers which layer"
+  },
+  "alertCoverage": {
+    "neverFired": [],
+    "scenariosWithoutAlert": []
+  },
+  "incident": {
+    "alertId": "ALERT-LEDGER-IMBALANCE",
+    "runbook": "RB-LEDGER-IMBALANCE",
+    "firedAtMs": 1767571800000,
+    "severity": "page",
+    "route": "payments-oncall",
+    "diagnosis": {
+      "invariant": "INV-1",
+      "operationId": "op-2206",
+      "journalId": "jrnl-0002",
+      "amountMinor": 975,
+      "traceId": "4ad7ff7f090aab005ba4ff4076865e00",
+      "auditTimeline": [
+        "1 intent.recorded 50000 EUR by checkout-api: customer request admitted",
+        "2 provider.effect 50000 EUR by provider-simulator: captured with fee 975",
+        "3 ledger.posted 50000 EUR by ledger-poster: 2 legs",
+        "4 status.published by checkout-api: customer told SUCCEEDED",
+        "5 settlement.matched 49025 EUR by settlement-importer: settlement evidence matched to effect"
+      ],
+      "logQuery": "jsonPayload.correlation.operationId=\"op-2206\""
+    },
+    "repair": {
+      "command": "node scripts/incident.ts --repair ledger-imbalance --journal jrnl-0002",
+      "appliedAtMs": 1767571860000,
+      "timesInvoked": 2,
+      "journalsSuperseded": [
+        "jrnl-0002"
+      ],
+      "journalsCreated": [
+        "jrnl-0002-r1"
+      ],
+      "idempotent": true
+    },
+    "violationsBefore": 1,
+    "violationsAfter": 0,
+    "verifiedAtMs": 1767571980000,
+    "outcome": "resolved"
+  },
+  "canary": {
+    "runId": "canary-0001",
+    "atMs": 1767571200000,
+    "passed": true,
+    "checks": [
+      {
+        "name": "one provider effect",
+        "expected": "1",
+        "actual": "1",
+        "passed": true
+      },
+      {
+        "name": "captured amount",
+        "expected": "1000",
+        "actual": "1000",
+        "passed": true
+      },
+      {
+        "name": "one posting group",
+        "expected": "1",
+        "actual": "1",
+        "passed": true
+      },
+      {
+        "name": "posting legs",
+        "expected": "3",
+        "actual": "3",
+        "passed": true
+      },
+      {
+        "name": "fee leg amount",
+        "expected": "44",
+        "actual": "44",
+        "passed": true
+      },
+      {
+        "name": "terminal state reached",
+        "expected": "SETTLED",
+        "actual": "SETTLED",
+        "passed": true
+      },
+      {
+        "name": "no invariant violations",
+        "expected": "0",
+        "actual": "0",
+        "passed": true
+      },
+      {
+        "name": "trace crossed every service",
+        "expected": "4",
+        "actual": "4",
+        "passed": true
+      }
+    ],
+    "violations": [],
+    "traceId": "48a5c7025ec488006b1e180057206800"
+  },
+  "cardinality": {
+    "perMetric": [
+      {
+        "metric": "money.http.responses",
+        "series": 12
+      },
+      {
+        "metric": "money.http.latency",
+        "series": 16
+      },
+      {
+        "metric": "money.provider.attempts",
+        "series": 3
+      },
+      {
+        "metric": "money.events.delivered",
+        "series": 3
+      },
+      {
+        "metric": "money.effects.applied",
+        "series": 2
+      },
+      {
+        "metric": "money.state.oldest_age_seconds",
+        "series": 5
+      },
+      {
+        "metric": "money.state.count",
+        "series": 5
+      },
+      {
+        "metric": "money.ledger.imbalance_minor",
+        "series": 2
+      },
+      {
+        "metric": "money.invariant.violations",
+        "series": 8
+      },
+      {
+        "metric": "money.reconciliation.open",
+        "series": 3
+      },
+      {
+        "metric": "money.reconciliation.oldest_age_seconds",
+        "series": 3
+      },
+      {
+        "metric": "money.settlement.lateness_seconds",
+        "series": 2
+      },
+      {
+        "metric": "money.canary.outcome",
+        "series": 2
+      },
+      {
+        "metric": "money.checker.staleness_seconds",
+        "series": 3
+      }
+    ],
+    "totalDeclaredSeries": 69
+  },
+  "telemetryVolume": {
+    "assumptions": {
+      "operationsPerDay": 1000000,
+      "spansPerOperation": 4,
+      "bytesPerSpan": 1200,
+      "logEntriesPerOperation": 3,
+      "bytesPerLogEntry": 900,
+      "auditRecordsPerOperation": 5,
+      "bytesPerAuditRecord": 400,
+      "metricPointsPerSeriesPerDay": 1440,
+      "bytesPerMetricPoint": 40,
+      "traceSamplingRate": 0.01
+    },
+    "summary": {
+      "lines": [
+        {
+          "signal": "traces at 1% head sampling",
+          "bytesPerDay": 48000000,
+          "gibPerDay": 0.045,
+          "sampleable": true,
+          "note": "4.47 GiB/day unsampled; the sampler is the only lever"
+        },
+        {
+          "signal": "structured logs",
+          "bytesPerDay": 2700000000,
+          "gibPerDay": 2.515,
+          "sampleable": true,
+          "note": "reducible by exclusion filters, at the cost of the investigation path"
+        },
+        {
+          "signal": "audit records",
+          "bytesPerDay": 2000000000,
+          "gibPerDay": 1.863,
+          "sampleable": false,
+          "note": "not sampleable; this is the evidence a dispute or an auditor asks for"
+        },
+        {
+          "signal": "metrics",
+          "bytesPerDay": 3974400,
+          "gibPerDay": 0.004,
+          "sampleable": false,
+          "note": "69 declared series; bounded by the catalogue, not by traffic"
+        }
+      ],
+      "totalGibPerDay": 4.427,
+      "sampleableGibPerDay": 2.56,
+      "fixedGibPerDay": 1.867,
+      "seriesIndependentOfTraffic": 69
+    }
+  },
+  "sloCoverage": {
+    "invariantsWithoutSlo": []
+  },
+  "dashboards": {
+    "count": 2,
+    "metricsOnNoDashboard": []
+  }
+}
